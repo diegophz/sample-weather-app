@@ -1,5 +1,6 @@
 {
   "name": "create-react-app-with-typescript",
+  "homepage": "https://diegophz.github.io/sample-weather-app",
   "version": "5.0.0",
   "private": true,
   "dependencies": {
@@ -23,6 +24,8 @@
     "typescript": "latest"
   },
   "scripts": {
+    "predploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -42,6 +45,7 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.11",
+    "gh-pages": "^4.0.0",
     "prettier": "^2.7.1"
   }
 }

@@ -49,7 +49,6 @@ const getIcon = (value: string): Leaflet.Icon => {
 const Map: React.FC = () => {
   function MyComponent() {
     const map = useMap();
-    console.log("map center:", map.getCenter());
 
     // const [map, setMap] = useState<Leaflet.Map>();
     // // default center of map
@@ -71,10 +70,7 @@ const Map: React.FC = () => {
       // const lonRight = map.getBounds().getNorthEast().lng;
       // const latTop = map.getBounds().getSouthWest().lat;
       // const latBottom = map.getBounds().getNorthEast().lat;
-      console.log(map.getBounds(), "sdsdsd");
-      console.log(lonLeft, lonRight, latTop, latBottom, "sdsdsd");
       const zoomLevel = map.getZoom();
-      console.log(zoomLevel, "zoom");
       return `${lonLeft},${latBottom},${lonRight},${latTop},${zoomLevel}`;
     };
     // initializes map for the first time
@@ -101,21 +97,17 @@ const Map: React.FC = () => {
     //     }
     //   ).addTo(map);
     // Leaflet.marker([center.lat, center.lon], { icon: cloudyIcon }).addTo(map);
-    //   // listens to dragend and updates the center
     map.on("dragend", () => {
       const center = map.getCenter();
       setCenter({ lat: center.lat, lon: center.lng });
     });
     // }, [map]);
-    // listens to center change and updates markers on center change
-    // also listens to map change first time (because map is not initialized in first load)
     useEffect(() => {
       if (!center || !map) return;
       // load data
       (async () => {
         const results = await getMapStatus(calculateBbox());
         results.forEach((record) => {
-          console.log(record.status, "sdssdsdsdsdsd12");
           Leaflet.marker([record.coords.lat, record.coords.lon], {
             icon: getIcon(record.status),
           }).addTo(map);

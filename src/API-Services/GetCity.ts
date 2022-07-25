@@ -21,6 +21,5 @@ export const getCityDetail = (
     })
     .then((response) => {
       const data = JSON.parse(response.data);
-      console.log(data, "data");
       return data.hourly;
     });
