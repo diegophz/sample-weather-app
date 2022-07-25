@@ -4,9 +4,10 @@ import Cloudy from "../../Assets/Icons/cloudy.png";
 import SunCloudy from "../../Assets/Icons/sun-cloudy.png";
 import Foggy from "../../Assets/Icons/foggy.png";
 import Sunny from "../../Assets/Icons/sunny.png";
+import Rain from "../../Assets/Icons/rain.png";
 import { getMapStatus } from "./API";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 
 const cloudyIcon = Leaflet.icon({
   iconUrl: Cloudy,
@@ -29,6 +30,12 @@ const sunnyIcon = Leaflet.icon({
   iconAnchor: [0, 0],
 });
 
+const rainIcon = Leaflet.icon({
+  iconUrl: Rain,
+  iconSize: [20, 20],
+  iconAnchor: [0, 0],
+});
+
 const getIcon = (value: string): Leaflet.Icon => {
   switch (value) {
     case "Clouds":
@@ -39,9 +46,9 @@ const getIcon = (value: string): Leaflet.Icon => {
     case "Mist":
       return foggyIcon;
     case "Rain":
-      return foggyIcon;
+      return rainIcon;
     case "Drizzle":
-      return foggyIcon;
+      return rainIcon;
     default:
       return sunCloudyIcon;
   }
@@ -49,64 +56,26 @@ const getIcon = (value: string): Leaflet.Icon => {
 const Map: React.FC = () => {
   function MyComponent() {
     const map = useMap();
-
-    // const [map, setMap] = useState<Leaflet.Map>();
-    // // default center of map
-    // const map = useMap();
     const [center, setCenter] = useState<{ lat: number; lon: number }>({
       lat: 49.325121,
       lon: 3.224152,
     });
-    // /**
-    //  * calculates bbox based on current center
-    //  * @returns string
-    //  */
-    const calculateBbox = () => {
+    const calculateBoundBox = () => {
       const lonLeft = Math.floor(map.getCenter().lng - 3);
       const lonRight = Math.floor(map.getCenter().lng + 2);
       const latTop = Math.floor(map.getCenter().lat + 2);
       const latBottom = Math.floor(map.getCenter().lat - 3);
-      // const lonLeft = map.getBounds().getSouthWest().lng;
-      // const lonRight = map.getBounds().getNorthEast().lng;
-      // const latTop = map.getBounds().getSouthWest().lat;
-      // const latBottom = map.getBounds().getNorthEast().lat;
       const zoomLevel = map.getZoom();
       return `${lonLeft},${latBottom},${lonRight},${latTop},${zoomLevel}`;
     };
-    // initializes map for the first time
-    // useEffect(() => {
-    //   if (!!map) return;
-    //   setMap(
-    //     Leaflet.map("map", {
-    //       minZoom: 7,
-    //       maxZoom: 7,
-    //       zoomControl: false,
-    //     }).setView([48.5919574, 2.8749632], 7)
-    //   );
-    // }, []);
-    // useEffect(() => {
-    //   if (!map) return;
-    //   // initializes tile layer for the first time
-    //   Leaflet.tileLayer(
-    //     "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
-    //     {
-    //       maxZoom: 18,
-    //       id: "mapbox/light-v10",
-    //       tileSize: 512,
-    //       zoomOffset: -1,
-    //     }
-    //   ).addTo(map);
-    // Leaflet.marker([center.lat, center.lon], { icon: cloudyIcon }).addTo(map);
     map.on("dragend", () => {
       const center = map.getCenter();
       setCenter({ lat: center.lat, lon: center.lng });
     });
-    // }, [map]);
     useEffect(() => {
       if (!center || !map) return;
-      // load data
       (async () => {
-        const results = await getMapStatus(calculateBbox());
+        const results = await getMapStatus(calculateBoundBox());
         results.forEach((record) => {
           Leaflet.marker([record.coords.lat, record.coords.lon], {
             icon: getIcon(record.status),
@@ -114,13 +83,9 @@ const Map: React.FC = () => {
         });
       })();
     }, [center, map]);
-    const position = [51.505, -0.09];
     return null;
   }
   return (
-    // <Box sx={{ flexGrow: 1 }}>
-    // <Container>
-    // <Grid container justifyContent="center" alignItems="center" spacing={1}>
     <MapContainer
       center={[40, 40]}
       style={{ height: "80vh" }}
@@ -129,18 +94,10 @@ const Map: React.FC = () => {
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="     https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=218c7cbbfca34de8a3453cd8af7d4868 "
+        url="https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=218c7cbbfca34de8a3453cd8af7d4868"
       />
       <MyComponent />
-      {/* <Marker >
-      <Popup>
-        A pretty CSS3 popup. <br /> Easily customizable.
-      </Popup>
-    </Marker> */}
     </MapContainer>
-    // </Grid>
-    // </Container>
-    // </Box>
   );
 };
 export default Map;

@@ -14,6 +14,7 @@ import { ICityResult } from "../../Models/city-restAPI-model";
 import Cloudy from "../../Assets/Icons/cloudy.png";
 import Sunny from "../../Assets/Icons/sunny.png";
 import Foggy from "../../Assets/Icons/foggy.png";
+import Rainy from "../../Assets/Icons/rain.png";
 
 interface IProps {
   data: ICityResult;
@@ -25,6 +26,8 @@ const getIcon = (value: string): string => {
       return Cloudy;
     case "Clear":
       return Sunny;
+    case "Rain":
+      return Rainy;
     case "Fog":
     case "Mist":
       return Foggy;
