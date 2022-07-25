@@ -1,6 +1,6 @@
 {
   "name": "create-react-app-with-typescript",
-  "homepage": "https://diegophz.github.io/sample-weather-app",
+  "homepage": ".",
   "version": "5.0.0",
   "private": true,
   "dependencies": {
